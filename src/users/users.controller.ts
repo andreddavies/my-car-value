@@ -8,15 +8,22 @@ import {
   Patch,
 } from '@nestjs/common';
 
-import { UsersService } from './users.service';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { CurrentUser } from 'src/decorators/current-user.decorator';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { UserDto } from './dto/user.dto';
+import { User } from './entities/user.entity';
+import { UsersService } from './users.service';
 
 @Controller('users')
 @Serialize(UserDto)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+
+  @Get()
+  whoAmI(@CurrentUser() user: User) {
+    return user;
+  }
 
   @Get()
   findAll() {
