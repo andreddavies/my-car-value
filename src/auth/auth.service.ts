@@ -24,7 +24,7 @@ export class AuthService {
   async signup({ email, password }: SignupDto) {
     const user = await this.usersService.findOneByEmail(email);
 
-    if (user.id) {
+    if (user?.id) {
       throw new BadRequestException('email in use');
     }
 
