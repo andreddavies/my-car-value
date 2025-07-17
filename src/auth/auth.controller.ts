@@ -13,4 +13,11 @@ export class AuthController {
 
     this.authService.signup({ email, password });
   }
+
+  @Post('/signin')
+  signin(@Body() body: SignupDto) {
+    const { email, password } = body;
+
+    this.authService.signin({ email, password });
+  }
 }
