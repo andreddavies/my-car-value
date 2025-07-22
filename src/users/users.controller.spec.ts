@@ -26,8 +26,13 @@ describe('Testing UsersController', () => {
         } as User),
       update: (
         id: number,
-        { email, password }: { email: string; password: string },
-      ) => Promise.resolve({ id, email, password }),
+        {
+          email,
+          password,
+          admin,
+          reports,
+        }: { email: string; password: string; admin: boolean; reports: any[] },
+      ) => Promise.resolve({ id, email, password, admin, reports }),
     };
     const mockUserRepository = {
       findOne: jest.fn(),
@@ -72,7 +77,13 @@ describe('Testing UsersController', () => {
 
   it('findUser returns a single user with the given id', async () => {
     mockUsersService.findOne = () =>
-      Promise.resolve({ id: 1, email: 'test@email.com', password: 'test' });
+      Promise.resolve({
+        id: 1,
+        email: 'test@email.com',
+        password: 'test',
+        admin: false,
+        reports: [],
+      });
 
     const user = await controller.findOne('1');
 

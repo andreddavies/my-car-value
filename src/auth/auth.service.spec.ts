@@ -21,7 +21,7 @@ describe('Testing AuthService', () => {
       update: (
         id: number,
         { email, password }: { email: string; password: string },
-      ) => Promise.resolve({ id, email, password }),
+      ) => Promise.resolve({ id, email, password, admin: false, reports: [] }),
     };
     const mockUserRepository = {
       findOne: jest.fn(),
@@ -74,6 +74,8 @@ describe('Testing AuthService', () => {
         id: 15,
         email: 'asdf@asdf.com',
         password: 'asdf',
+        admin: false,
+        reports: [],
       });
 
     await expect(
