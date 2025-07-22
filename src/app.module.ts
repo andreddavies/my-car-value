@@ -8,13 +8,11 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
 // features
-import { User } from './users/entities/user.entity';
 import { UsersModule } from './users/users.module';
 
-import { Report } from './reports/entities/report.entity';
-import { ReportsModule } from './reports/reports.module';
-import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { AuthModule } from './auth/auth.module';
+import { ReportsModule } from './reports/reports.module';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const cookieSession = require('cookie-session');
@@ -25,17 +23,7 @@ const cookieSession = require('cookie-session');
       isGlobal: true,
       envFilePath: `.env.${process.env.NODE_ENV}`,
     }),
-    TypeOrmModule.forRootAsync({
-      inject: [ConfigService],
-      useFactory: (config: ConfigService) => {
-        return {
-          type: 'sqlite',
-          database: config.get<string>('DB_NAME'),
-          entities: [User, Report],
-          synchronize: true, // only use in dev env}
-        };
-      },
-    }),
+    TypeOrmModule.forRoot(),
     UsersModule,
     ReportsModule,
     AuthModule,
@@ -52,11 +40,13 @@ const cookieSession = require('cookie-session');
   ],
 })
 export class AppModule {
+  constructor(private readonly configService: ConfigService) {}
+
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(
         cookieSession({
-          keys: ['asjdakljda'], // dev purpose
+          keys: [this.configService.get('COOKIE_KEY')], // dev purpose
         }),
       )
       .forRoutes('*');
